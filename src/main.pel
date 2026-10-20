@@ -1,0 +1,13 @@
+//~ Evaluates a few expressions with the calculator in `rpn.pel`.
+import { evaluate, describe } = .rpn
+
+fn main() {
+    /// Each line is one expression; the last three are mistakes on purpose.
+    const lines = ["3 4 + 2 *", "10 2 8 * + 3 -", "5 1 2 + 4 * + 3 -", "1 +", "4 0 /", "2 x *"]
+    for line of lines {
+        switch evaluate(line) {
+            case ok(value): print("#line = #value")
+            case err(e): print("#line: #(describe(e))")
+        }
+    }
+}

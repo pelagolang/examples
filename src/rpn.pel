@@ -1,0 +1,64 @@
+//~ A reverse Polish notation calculator: "3 4 + 2 *" is (3 + 4) * 2.
+
+//~ Everything that can go wrong while evaluating an expression.
+pub enum calc_error {
+    bad_token(text: string)
+    stack_empty
+    leftover(count: int)
+    divide_by_zero
+}
+
+//~ A readable message for an error.
+pub fn describe(e: calc_error) -> string {
+    switch e {
+        case .bad_token(text): "not a number or operator: #text"
+        case .stack_empty: "an operator needs two numbers before it"
+        case .leftover(count): "#count numbers left over; expected exactly one result"
+        case .divide_by_zero: "division by zero"
+    }
+}
+
+fn is_operator(word: str) -> bool = word == "+" || word == "-" || word == "*" || word == "/"
+
+fn apply(op: str, a: int, b: int) -> int ! calc_error {
+    switch op {
+        case "+": ok(a + b)
+        case "-": ok(a - b)
+        case "*": ok(a * b)
+        case "/":
+            if b == 0 {
+                return err(calc_error.divide_by_zero)
+            }
+            ok(a / b)
+        default: err(calc_error.bad_token(text: "#op"))
+    }
+}
+
+fn pop(inout stack: [int]) -> int ! calc_error {
+    switch stack.pop!() {
+        case some(n): ok(n)
+        case none: err(calc_error.stack_empty)
+    }
+}
+
+//~ Evaluate a whole expression and return its single result.
+pub fn evaluate(text: str) -> int ! calc_error {
+    var stack: [int] = []
+    for word of text.split(" ") {
+        if word.is_empty() { continue }
+        switch word.parse_int() {
+            case ok(n): stack.push!(n)
+            case err(_):
+                if !is_operator(word) {
+                    return err(calc_error.bad_token(text: "#word"))
+                }
+                const b = pop(inout stack)?
+                const a = pop(inout stack)?
+                stack.push!(apply(word, a, b)?)
+        }
+    }
+    if stack.len() != 1 {
+        return err(calc_error.leftover(count: stack.len()))
+    }
+    ok(stack[0])
+}
