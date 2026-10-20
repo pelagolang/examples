@@ -1,0 +1,6 @@
+3 4 + 2 * = 14
+10 2 8 * + 3 - = 23
+5 1 2 + 4 * + 3 - = 14
+1 +: an operator needs two numbers before it
+4 0 /: division by zero
+2 x *: not a number or operator: x
