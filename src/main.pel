@@ -1,5 +1,5 @@
 //~ Evaluates a few expressions with the calculator in `rpn.pel`.
-import { evaluate, describe } = .rpn
+import { describe, evaluate } = .rpn
 
 fn main() {
     /// Each line is one expression; the last three are mistakes on purpose.
