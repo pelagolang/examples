@@ -1,0 +1,27 @@
+/// Shows: `struct` with methods, `inout self` to change a value in place (`c.bump!()`), and value semantics (`copy`).
+/// Run:   pelago run types/structs.pel
+/// Output:
+/// | hits=2
+/// | 1 10 true
+struct counter {
+    name: string
+    n: int = 0
+
+    fn bump(inout self) { self.n += 1 }
+    fn show(self) -> string = "#(self.name)=#(self.n)"
+}
+
+struct point { x: int, y: int }
+
+fn main() {
+    var c = counter { name: "hits" }
+    c.bump!()
+    c.bump!()
+    print(c.show())
+
+    /// A struct is a value: `copy` makes an independent one.
+    const p = point { x: 1, y: 2 }
+    var q = copy p
+    q.x = 10
+    print(p.x, q.x, p == point { x: 1, y: 2 })
+}

@@ -1,0 +1,25 @@
+/// Shows: functions, default arguments, expression bodies (`= expr`), early `return` and the last expression as the value.
+/// Run:   pelago run basics/functions.pel
+/// Output:
+/// | 49
+/// | Hello, Ada!
+/// | Welcome, Ada!
+/// | negative zero positive
+fn square(x: int) -> int = x * x
+
+fn greet(name: str, greeting: str = "Hello") -> string {
+    "#greeting, #name!"
+}
+
+fn sign(n: int) -> string {
+    if n < 0 { return "negative" }
+    if n == 0 { return "zero" }
+    "positive"
+}
+
+fn main() {
+    print(square(7))
+    print(greet("Ada"))
+    print(greet("Ada", "Welcome"))
+    print(sign(-4), sign(0), sign(9))
+}

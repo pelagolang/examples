@@ -1,0 +1,50 @@
+/// Shows: a small domain model: a struct with methods that change it (`inout self`), `result` errors from an enum, and
+/// `?` chaining the steps of a transfer.
+/// Run:   pelago run programs/bank.pel
+/// Output:
+/// | moved 30: 70 / 35
+/// | refused 500: needs 500 but has 70
+/// | refused -1: amount must be positive
+enum bank_error {
+    insufficient(needed: int, available: int)
+    not_positive
+}
+
+struct account {
+    owner: string
+    balance: int
+
+    fn deposit(inout self, amount: int) -> void ! bank_error {
+        if amount <= 0 { return err(bank_error.not_positive) }
+        self.balance += amount
+    }
+
+    fn withdraw(inout self, amount: int) -> void ! bank_error {
+        if amount <= 0 { return err(bank_error.not_positive) }
+        if amount > self.balance { return err(bank_error.insufficient(amount, self.balance)) }
+        self.balance -= amount
+    }
+}
+
+fn transfer(from!: account, to!: account, amount: int) -> void ! bank_error {
+    from.withdraw!(amount)?
+    to.deposit!(amount)?
+}
+
+fn show(e: bank_error) -> string {
+    switch e {
+        case .insufficient(n, a): "needs #n but has #a"
+        case .not_positive: "amount must be positive"
+    }
+}
+
+fn main() {
+    var a = account { owner: "ann", balance: 100 }
+    var b = account { owner: "bo", balance: 5 }
+    for amount of [30, 500, -1] {
+        switch transfer(a!, b!, amount) {
+            case ok(_): print("moved #amount: #(a.balance) / #(b.balance)")
+            case err(e): print("refused #amount: #(show(e))")
+        }
+    }
+}

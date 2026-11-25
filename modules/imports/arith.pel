@@ -1,0 +1,6 @@
+//~ Arithmetic helpers; `pub` makes a name visible to other modules, everything else is private.
+pub fn add(a: int, b: int) -> int = a + b
+
+pub fn mul(a: int, b: int) -> int = a * b
+
+fn unused_helper() -> int = 0

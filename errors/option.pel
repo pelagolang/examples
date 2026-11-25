@@ -1,0 +1,24 @@
+/// Shows: no null. `T?` is an `option`: `none` or a value. `??` picks a default, `switch` and `is` take it apart.
+/// Run:   pelago run errors/option.pel
+/// Output:
+/// | some(8) none 8 0
+/// | some(5) none
+/// | some(4) none
+/// | half is 3
+/// | also 2
+/// | true some(1)
+fn half(n: int) -> int? = n % 2 == 0 ? n / 2 : none
+
+fn main() {
+    const a: int? = 8
+    const b: int? = none
+    print(a, b, a ?? 0, b ?? 0)
+    print(half(10), half(7))
+    print(a.andThen((n) ~> half(n)), a.filter((n) ~> n > 9))
+    switch half(6) {
+        case some(v): print("half is #v")
+        default: print("no half")
+    }
+    if half(4) is some(v) { print("also #v") }
+    print(a.isSomeAnd((n) ~> n == 8), b.orElse(() ~> 1))
+}

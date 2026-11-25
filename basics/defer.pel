@@ -1,0 +1,23 @@
+/// Shows: `defer` runs a statement when the function ends, however it ends, in reverse order: clean-up written next to
+/// the code that needs it.
+/// Run:   pelago run basics/defer.pel
+/// Output:
+/// | open
+/// | working
+/// | close
+/// | ok(1)
+/// | open
+/// | close
+/// | err("failed")
+fn work(fail: bool) -> int ! string {
+    print("open")
+    defer print("close")
+    if fail { return err("failed") }
+    print("working")
+    ok(1)
+}
+
+fn main() {
+    print(work(false))
+    print(work(true))
+}

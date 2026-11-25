@@ -1,0 +1,31 @@
+/// Shows: no exceptions. A fallible function returns `T ! E` (a `result`), `ok(..)` / `err(..)` build one, `?` passes an
+/// error up, and `switch` takes it apart.
+/// Run:   pelago run errors/result.pel
+/// Output:
+/// | ok(7) err(bad digit at position 0)
+/// | ok 5
+/// | error: division by zero
+/// | -1 ok(30)
+fn parse_pair(text: str) -> int ! parse_error {
+    const (left, right) = text.splitOnce(",") ?? (text, "0")
+    ok(left.parseInt()? + right.parseInt()?)
+}
+
+fn safe_div(a: int, b: int) -> int ! string {
+    if b == 0 { return err("division by zero") }
+    ok(a / b)
+}
+
+fn main() {
+    print(parse_pair("3,4"), parse_pair("3,x"))
+    switch safe_div(10, 2) {
+        case ok(v): print("ok #v")
+        case err(e): print("error: #e")
+    }
+    switch safe_div(1, 0) {
+        case ok(v): print("ok #v")
+        case err(e): print("error: #e")
+    }
+    /// `or` gives a fallback; adapters like `map` change the value but keep the error.
+    print(safe_div(1, 0).or(-1), safe_div(9, 3).map((n) ~> n * 10))
+}

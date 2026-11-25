@@ -1,0 +1,31 @@
+/// Shows: function types, closures with `~>`, and the access marks in function types: `fn(int!)` takes `inout`,
+/// `fn(string!!)` takes `sink`. `x!` hands over a variable to change, `x!!` hands it over for good.
+/// Run:   pelago run types/function_types.pel
+/// Output:
+/// | 18
+/// | 21
+/// | hey!
+/// | 3
+fn apply_twice(f: fn(int) -> int, x: int) -> int = f(f(x))
+
+fn add_ten(n!: int) { n += 10 }
+
+fn twice(step: fn(int!), n!: int) {
+    step(n!)
+    step(n!)
+}
+
+fn shout(s!!: string) -> int {
+    print(s + "!")
+    s.len()
+}
+
+fn call_with(f: fn(string!!) -> int, text!!: string) -> int = f(text!!)
+
+fn main() {
+    print(apply_twice(x ~> x * 3, 2))
+    var n = 1
+    twice(add_ten, n!)
+    print(n)
+    print(call_with(shout, "hey"))
+}

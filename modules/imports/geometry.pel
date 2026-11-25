@@ -1,0 +1,6 @@
+//~ Rectangles; this module imports another one, `arith`.
+import { mul } = .arith
+
+pub struct rect { pub w: int, pub h: int }
+
+pub fn area(r: rect) -> int = mul(r.w, r.h)

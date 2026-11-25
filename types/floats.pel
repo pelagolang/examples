@@ -1,0 +1,23 @@
+/// Shows: `float`, the sized `float32`/`float64`, and the soft-float types `float16`, `float128` and `float256`.
+/// Run:   pelago run types/floats.pel
+/// Output:
+/// | 0.333333
+/// | 0.1 0.2 65500
+/// | 0.3333333333333333333333333333333333
+/// | 0.333333333333333333333333333333333333333333333333333333333333333333333333
+/// | 0.30000000000000000000000000000000004 false
+/// | 1.414214 7 8 3
+fn main() {
+    const third = 1.0 / 3.0
+    print(third)
+    const small: float16 = 0.1
+    print(small, small + small, 65504.0 to float16)
+    const quad: float128 = 1.0
+    print(quad / 3.0)
+    const oct: float256 = 1.0
+    print(oct / 3.0)
+    /// Literals are rounded once, correctly, to the type they are given.
+    const q: float128 = 0.1
+    print(q + 0.2, q + 0.2 == 0.3)
+    print(2.0.sqrt(), 7.5.floor(), 7.5.ceil(), 2.5.round())
+}

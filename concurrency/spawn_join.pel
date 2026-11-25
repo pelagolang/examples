@@ -1,0 +1,28 @@
+/// Shows: `spawn` starts a task and returns a `task<T>`; `join!!()` waits for its result. A closure that outlives the
+/// function that made it gets what it uses moved in with `[sink x]`.
+/// Run:   pelago run concurrency/spawn_join.pel
+/// Output:
+/// | a2 b6
+/// | 55 500500
+fn ticker(period: int, label: string) -> task<string> {
+    var count = period
+    count = count + 1
+    var name = copy label
+    return spawn([sink count, sink name] () ~> name + "#(count)")
+}
+
+fn sum_to(n: int) -> int {
+    var t = 0
+    for i of 1..n + 1 { t += i }
+    t
+}
+
+fn main() {
+    const a = ticker(1, "a")
+    const b = ticker(5, "b")
+    print(a.join!!(), b.join!!())
+
+    const big = spawn(() ~> sum_to(1000))
+    const small = spawn(() ~> sum_to(10))
+    print(small.join!!(), big.join!!())
+}

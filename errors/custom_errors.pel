@@ -1,0 +1,44 @@
+/// Shows: your own error type (an `enum`), `?` converting between steps, and `switch` over the error cases.
+/// Run:   pelago run errors/custom_errors.pel
+/// Output:
+/// | port 8080
+/// | bad value eighty for port
+/// | missing key port
+enum config_error {
+    missing(key: string)
+    invalid(key: string, value: string)
+}
+
+fn describe(e: config_error) -> string {
+    switch e {
+        case .missing(k): "missing key #k"
+        case .invalid(k, v): "bad value #v for #k"
+    }
+}
+
+fn lookup(pairs: [(string, string)], key: string) -> string ! config_error {
+    for (k, v) of pairs {
+        if k == key { return ok(v) }
+    }
+    err(config_error.missing(copy key))
+}
+
+fn port(pairs: [(string, string)]) -> int ! config_error {
+    const text = lookup(pairs, "port")?
+    switch text.parseInt() {
+        case ok(n): ok(n)
+        case err(_): err(config_error.invalid("port", text))
+    }
+}
+
+fn main() {
+    const good = [("port", "8080")]
+    const bad = [("port", "eighty")]
+    const none_at_all: [(string, string)] = []
+    for cfg of [good, bad, none_at_all] {
+        switch port(cfg) {
+            case ok(p): print("port #p")
+            case err(e): print(describe(e))
+        }
+    }
+}

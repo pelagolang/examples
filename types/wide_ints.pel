@@ -1,0 +1,32 @@
+/// Shows: 128 and 256 bit integers (`int128`, `uint128`, `int256`, `uint256`) with exact arithmetic that traps on overflow
+/// like every other integer, and the wrapping operators `+%`, `-%`, `*%`.
+/// Run:   pelago run types/wide_ints.pel
+/// Output:
+/// | 170141183460469231731687303715884105727 -170141183460469231731687303715884105728
+/// | 24305883351495604533098186245126300818 727
+/// | 18446744073709551616 340282366920938463444927863358058659840 340282366920938463444927863358058659840
+/// | 30414093201713378043612608166064768844377641568960512000000000000
+/// | 40526919504877216755680601905432322134980384796226602145184481280000000000000
+/// | -170141183460469231731687303715884105728 340282366920938463463374607431768211455
+fn factorial(n: uint256) -> uint256 {
+    var r: uint256 = 1
+    var i: uint256 = 2
+    while i <= n {
+        r *= i
+        i += 1
+    }
+    r
+}
+
+fn main() {
+    const biggest: int128 = 170141183460469231731687303715884105727
+    print(biggest, -biggest - 1)
+    print(biggest / 7, biggest % 1000)
+    const a: uint128 = 18446744073709551615
+    print(a + 1, (a + 1) * a, a << 64)
+    /// 50! does not fit in 64 bits, but fits in 256.
+    print(factorial(50))
+    print(factorial(57))
+    /// Wrapping arithmetic wraps instead of stopping.
+    print(biggest +% 1, (0 to uint128) -% 1)
+}

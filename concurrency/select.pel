@@ -1,0 +1,18 @@
+/// Shows: `select` waits on several channels at once and runs the first case that is ready (`v` is what `recv()` returns, an `option`); `default` runs when
+/// nothing is ready.
+/// Run:   pelago run concurrency/select.pel
+/// Output:
+/// | nothing yet
+/// | got some(7)
+fn main() {
+    const (tx, rx) = chan<int>()
+    select {
+        case v = rx.recv() { print("got #v") }
+        default { print("nothing yet") }
+    }
+    tx.send(7)
+    select {
+        case v = rx.recv() { print("got #v") }
+        default { print("nothing yet") }
+    }
+}

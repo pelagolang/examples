@@ -1,0 +1,39 @@
+/// Shows: `std.json`: parse text into a `json.value`, look inside with `get`, `at` and `size`, and write it back out
+/// compactly (`encode`) or indented (`pretty`). Bad input is an `err` with a position.
+/// Run:   pelago run json/parse_and_print.pel
+/// Output:
+/// | {"name":"Ada","tags":[1,2.5,true,null],"nested":{"k":[]}}
+/// | some("Ada") none 3
+/// | {
+/// |   "name": "Ada",
+/// |   "tags": [
+/// |     1,
+/// |     2.5,
+/// |     true,
+/// |     null
+/// |   ],
+/// |   "nested": {
+/// |     "k": []
+/// |   }
+/// | }
+/// | ok
+/// | bad json: the array is not closed (line 1, column 6)
+import std.json
+
+fn demo(text: str) -> void ! parse_error {
+    const doc = json.parse(text)?
+    print(doc.encode())
+    print(doc.get("name"), doc.at(0), doc.size())
+    print(doc.pretty(2))
+}
+
+fn main() {
+    switch demo("{\"name\": \"Ada\", \"tags\": [1, 2.5, true, null], \"nested\": {\"k\": []}}") {
+        case ok(_): print("ok")
+        case err(e): print("bad json: #(e.message)")
+    }
+    switch demo("[1, 2") {
+        case ok(_): print("ok")
+        case err(e): print("bad json: #(e.message)")
+    }
+}

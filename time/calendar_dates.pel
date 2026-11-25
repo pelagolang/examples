@@ -1,0 +1,33 @@
+/// Shows: `std.calendar`: building dates (a `result`: February 30th is an error), weekday, ordinal day, adding months
+/// and days, leap years, and ISO weeks.
+/// Run:   pelago run time/calendar_dates.pel
+/// Output:
+/// | 2026-11-17 Tuesday 321 false 30
+/// | 2026-12-17 2027-02-17 2025-11-17
+/// | 2024-02-29
+/// | true false 28
+/// | true
+/// | 2026 47
+/// | done
+import std.calendar
+import std.time
+import { time_error } = std.time
+
+fn demo() -> void ! time_error {
+    const d = calendar.dateOf(2026, 11, 17)?
+    print(d, d.weekday(), d.ordinal(), d.isLeapYear(), d.daysInMonth())
+    print(d.plusDays(30), d.plusMonths(3), d.plusYears(-1))
+    /// Adding a month to the 31st clamps to the end of the shorter month.
+    print((calendar.dateOf(2024, 1, 31)?).plusMonths(1))
+    print(calendar.isLeap(2000), calendar.isLeap(1900), calendar.daysInMonth(2026, 2))
+    print(calendar.dateOf(2026, 2, 30).isErr())
+    const w = d.isoWeek()
+    print(w.year, w.week)
+}
+
+fn main() {
+    switch demo() {
+        case ok(_): print("done")
+        case err(e): print("error")
+    }
+}

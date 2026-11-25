@@ -1,0 +1,38 @@
+/// Shows: `std.sha2`, `std.sha3`, `std.blake3` and `std.checksum`: every hash has the same shape, `hash.digest(hasher, bytes)`,
+/// and `hash.hex` shows the bytes. Hashing in pieces gives the same answer as hashing at once.
+/// Run:   pelago run crypto/hashes.pel
+/// Output:
+/// | ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+/// | ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f
+/// | 3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532
+/// | 6437b3ac38465133ffb63b75273a8db548c558465d79db03fd359c6cd5bd9d85
+/// | cbf43926
+/// | 11e60398
+/// | true
+import std.hash
+import std.sha2
+import std.sha3
+import std.blake3
+import std.checksum
+import { sha256, sha512 } = std.sha2
+import { adler32, crc } = std.checksum
+import { keccak } = std.sha3
+import { blake3hash } = std.blake3
+
+fn text(s: str) -> [byte] = s.bytes().toList()
+
+fn main() {
+    const abc = text("abc")
+    print(hash.hex(hash.digest(sha256.new(), abc)))
+    print(hash.hex(hash.digest(sha512.new(), abc)))
+    print(hash.hex(hash.digest(keccak.sha3(256), abc)))
+    print(hash.hex(hash.digest(blake3hash.new(), abc)))
+    print(hash.hex(hash.digest(crc.crc32(), text("123456789"))))
+    print(hash.hex(hash.digest(adler32.new(), text("Wikipedia"))))
+
+    /// Feeding the pieces one by one gives the same digest.
+    var h = sha256.new()
+    h.update!(text("a"))
+    h.update!(text("bc"))
+    print(hash.hex(h.finish()) == hash.hex(hash.digest(sha256.new(), abc)))
+}

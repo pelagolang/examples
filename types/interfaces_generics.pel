@@ -1,0 +1,35 @@
+/// Shows: an `interface`, a generic function with a bound, and the `order` bound that `min`/`max` use.
+/// Run:   pelago run types/interfaces_generics.pel
+/// Output:
+/// | Rex says woof
+/// | Tom says meow
+/// | 9 zebra 1.5
+interface speaker {
+    fn speak(self) -> string
+}
+
+struct dog { name: string }
+struct cat { name: string }
+
+impl speaker for dog {
+    fn speak(self) -> string = "#(self.name) says woof"
+}
+impl speaker for cat {
+    fn speak(self) -> string = "#(self.name) says meow"
+}
+
+fn announce<T: speaker>(x: T) { print(x.speak()) }
+
+fn largest<T: order>(items: [T]) -> T {
+    var best = items[0]
+    for x of items {
+        if x > best { best = x }
+    }
+    best
+}
+
+fn main() {
+    announce(dog { name: "Rex" })
+    announce(cat { name: "Tom" })
+    print(largest([3, 9, 4]), largest(["pear", "apple", "zebra"]), largest([1.5, 0.5]))
+}

@@ -1,0 +1,41 @@
+/// Shows: `std.fs`: write a file, read it back, append, list a directory, ask about a file, and remove it again. Every
+/// call returns a `result` with an `io_error` and `?` passes it up.
+/// Run:   pelago run files/read_write.pel
+/// Output:
+/// | 3 34
+/// | > first line
+/// | > second line
+/// | > third line
+/// | true false
+/// | ["notes.txt"]
+/// | 34
+/// | false
+/// | done
+import std.fs
+
+fn demo() -> void ! io_error {
+    fs.createDir("pelago-example-dir")?
+    const path = "pelago-example-dir/notes.txt"
+    fs.writeText(path, "first line\nsecond line\n")?
+    fs.appendText(path, "third line\n")?
+
+    const text = fs.readText(path)?
+    print(text.lines().count(), text.len())
+    for line of text.lines() { print("> #line") }
+
+    print(fs.exists(path), fs.exists("pelago-example-dir/nope.txt"))
+    print(fs.readDir("pelago-example-dir")?)
+    const info = fs.metadata(path)?
+    print(info.size)
+
+    fs.removeFile(path)?
+    fs.removeDir("pelago-example-dir")?
+    print(fs.exists(path))
+}
+
+fn main() {
+    switch demo() {
+        case ok(_): print("done")
+        case err(e): print("io error: #(e.message)")
+    }
+}

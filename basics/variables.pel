@@ -1,0 +1,22 @@
+/// Shows: `const` (cannot change) and `var` (can), type annotations, inference, and `#name` / `#(expr)` in strings.
+/// Run:   pelago run basics/variables.pel
+/// Output:
+/// | Pelago, 2026
+/// | count is 10, twice that is 20
+/// | 2.5 true
+/// | Pelago 2026 10 2.5 true
+fn main() {
+    const language = "Pelago"
+    const year: int = 2026
+    var count = 0
+    count += 1
+    count = count * 10
+    const ratio = 2.5
+    const ready = true
+
+    print("#language, #year")
+    print("count is #count, twice that is #(count * 2)")
+    print(ratio, ready)
+    /// `print` takes several values and separates them with a space.
+    print(language, year, count, ratio, ready)
+}

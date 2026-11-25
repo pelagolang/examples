@@ -1,0 +1,26 @@
+/// Shows: a small program: split text into words, count them in a `map`, sort the entries and print the top ones.
+/// Run:   pelago run programs/word_count.pel
+/// Output:
+/// | the: 3
+/// | quick: 1
+/// | brown: 1
+/// | 9 distinct words
+fn count(text: str) -> map<string, int> {
+    var counts: map<string, int> = {:}
+    for word of text.split(" ") {
+        if word.isEmpty() { continue }
+        const key = word.toLower()
+        counts.insert!(copy key, (counts.get(key) ?? 0) + 1)
+    }
+    counts
+}
+
+fn main() {
+    const text = "the quick brown fox jumps over the lazy dog the end"
+    const counts = count(text)
+    var entries: [(string, int)] = []
+    for word, n of counts { entries.push!((copy word, n)) }
+    entries.sortBy!((a, b) ~> b.1 - a.1)
+    for (word, n) of entries.iter().take(3).toList() { print("#word: #n") }
+    print(counts.len(), "distinct words")
+}

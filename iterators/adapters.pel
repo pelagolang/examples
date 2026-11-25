@@ -1,0 +1,30 @@
+/// Shows: iterators: `map`, `filter`, `fold`, `zip`, `enumerate`, `take`, `skip`, `chain`, `reversed`, `min`/`max`, `sum`.
+/// Run:   pelago run iterators/adapters.pel
+/// Output:
+/// | [9, 1, 16, 1, 25, 81, 4, 36]
+/// | [4, 2, 6]
+/// | 31 31
+/// | some(1) some(9) 8
+/// | [3, 1, 4] [9, 2, 6]
+/// | [6, 2]
+/// | [(0, 3), (1, 1)]
+/// | [(3, "a"), (1, "b"), (4, "c")]
+/// | [1, 2, 9]
+/// | true true
+/// | some(5) some(2)
+/// | 7
+fn main() {
+    const xs = [3, 1, 4, 1, 5, 9, 2, 6]
+    print(xs.iter().map(x ~> x * x).toList())
+    print(xs.iter().filter(x ~> x % 2 == 0).toList())
+    print(xs.iter().fold(0, (acc, x) ~> acc + x), xs.iter().sum())
+    print(xs.iter().min(), xs.iter().max(), xs.iter().count())
+    print(xs.iter().take(3).toList(), xs.iter().skip(5).toList())
+    print(xs.iter().reversed().take(2).toList())
+    print(xs.iter().enumerate().take(2).toList())
+    print(xs.iter().zip(["a", "b", "c"].iter()).toList())
+    print([1, 2].iter().chain([9].iter()).toList())
+    print(xs.iter().any(x ~> x > 8), xs.iter().all(x ~> x > 0))
+    print(xs.iter().find(x ~> x > 4), xs.iter().position(x ~> x == 4))
+    print(xs.iter().toSet().len())
+}

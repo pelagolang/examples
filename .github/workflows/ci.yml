@@ -2,31 +2,41 @@ name: ci
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
-  check:
+  examples:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      # Pelago has no binary releases yet, so build the tool from the main repository.
+      # Pelago has no binary releases yet, so build the tool from the main repository. The build is cached
+      # per commit of `main`, so it only runs again when the compiler changes.
+      - name: Find the compiler version
+        id: compiler
+        run: echo "sha=$(git ls-remote https://github.com/pelagolang/pelago refs/heads/main | cut -f1)" >> "$GITHUB_OUTPUT"
+      - name: Cache the pelago tool
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/pelago
+          key: pelago-${{ runner.os }}-${{ steps.compiler.outputs.sha }}
       - name: Install pelago
+        if: steps.cache.outputs.cache-hit != 'true'
         run: cargo install --git https://github.com/pelagolang/pelago --locked pelago
-      - run: pelago fmt --check .
-      - run: pelago check .
-
-  run:
-    runs-on: ubuntu-latest
-    needs: check
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - name: Install pelago
-        run: cargo install --git https://github.com/pelagolang/pelago --locked pelago
-      - name: Run in the interpreter
-        run: pelago run . | diff - expected.txt
-      - name: Build the native executable and run it
+      - name: Formatting follows pelago.yaml
+        run: pelago fmt --check .
+      - name: Check, run natively and in the interpreter, compare with the headers
+        run: python3 tools/run-examples.py
+      - name: The RPN project, natively and interpreted
         run: |
-          pelago build -o rpn .
-          ./rpn | diff - expected.txt
+          pelago check projects/rpn
+          pelago run projects/rpn | diff - projects/rpn/expected.txt
+          pelago run --interp projects/rpn | diff - projects/rpn/expected.txt
+      - name: Build native executables and run them
+        run: |
+          pelago build -o "$RUNNER_TEMP/rpn" projects/rpn
+          "$RUNNER_TEMP/rpn" | diff - projects/rpn/expected.txt
+          pelago build -o "$RUNNER_TEMP/hello" basics/hello.pel
+          "$RUNNER_TEMP/hello"

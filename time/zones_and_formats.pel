@@ -1,0 +1,42 @@
+/// Shows: `std.zone` and `std.timefmt`: a moment in a fixed-offset zone, RFC 3339 and RFC 2822 text, a custom pattern,
+/// parsing it back, and a POSIX rule time zone (daylight saving time without a database).
+/// Run:   pelago run time/zones_and_formats.pel
+/// Output:
+/// | 2023-11-15T07:13:20+09:00
+/// | 2023-11-15T07:13:20+09:00
+/// | Wed, 15 Nov 2023 07:13:20 +0900
+/// | Wednesday 15 November 2023, 07:13 +09:00
+/// | Tue, 14 Nov 2023 22:13:20 GMT
+/// | true
+/// | 2023-11-14T17:13:20-05:00
+/// | 2023-07-22T00:26:40-04:00
+/// | done
+import std.time
+import std.zone
+import std.timefmt
+import { time_error } = std.time
+
+fn demo() -> void ! time_error {
+    const noon = time.fromUnix(1_700_000_000)
+    const tokyo = zone.fixed(9 * 3600)?
+    const z = tokyo.zoned(noon)
+    print(z)
+    print(timefmt.rfc3339(z))
+    print(timefmt.rfc2822(z))
+    print(timefmt.formatZoned(z, "EEEE d MMMM yyyy, HH:mm xxx")?)
+    print(timefmt.httpDate(noon))
+
+    const back = timefmt.parseRfc3339("2023-11-14T22:13:20Z")?
+    print(back.moment() == noon)
+
+    const ny = zone.parseRule("EST5EDT,M3.2.0,M11.1.0")?
+    print(ny.zoned(time.fromUnix(1_700_000_000)))
+    print(ny.zoned(time.fromUnix(1_690_000_000)))
+}
+
+fn main() {
+    switch demo() {
+        case ok(_): print("done")
+        case err(e): print("time error")
+    }
+}

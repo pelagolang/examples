@@ -1,0 +1,20 @@
+/// Shows: `std.time` durations: constructors, arithmetic, comparison, and the checked variants that return `none`
+/// instead of overflowing.
+/// Run:   pelago run time/durations.pel
+/// Output:
+/// | 90s 120s 210s 30s 270s 30s
+/// | true 90 120000 90
+/// | 90000 500000000
+/// | none
+/// | 5s
+import std.time
+
+fn main() {
+    const a = time.seconds(90)
+    const b = time.minutes(2)
+    print(a, b, a + b, b - a, a.times(3), b.divInt(4))
+    print(a < b, a.asSeconds(), b.asMillis(), a.asSecondsFloat())
+    print(time.hours(25).asSeconds(), time.millis(1500).subsecNanos())
+    print(time.longest().checkedAdd(time.nanos(1)))
+    print(time.seconds(9).clamp(time.seconds(1), time.seconds(5)))
+}

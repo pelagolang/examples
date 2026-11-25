@@ -1,0 +1,26 @@
+/// Shows: `chan<T>()` makes a sender and a receiver. One task sends, the main task calls `recv()` until it returns
+/// `none`, which happens when every sender is gone.
+/// Run:   pelago run concurrency/channels.pel
+/// Output:
+/// | got 0
+/// | got 1
+/// | got 4
+/// | got 9
+/// | got 16
+/// | total 30
+fn main() {
+    const (tx, rx) = chan<int>()
+    spawn([sink tx] ~> {
+        for i of 0..5 { tx.send(i * i) }
+    })
+    var total = 0
+    while true {
+        switch rx.recv() {
+            case some(x):
+                print("got #x")
+                total += x
+            case none: break
+        }
+    }
+    print("total #total")
+}

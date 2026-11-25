@@ -1,0 +1,24 @@
+/// Shows: `split`, `lines`, `join`, building a string with `pushStr!`, and parsing numbers with `parseInt` / `parseFloat`.
+/// Run:   pelago run strings/split_join_build.pel
+/// Output:
+/// | ["ann", "31", "2.5"] ann | 31 | 2.5
+/// | ["a", "b", "c"]
+/// | 1;2;3;
+/// | ok(31) ok(2.5)
+/// | not a number: bad digit at position 2
+fn main() {
+    const csv = "ann,31,2.5"
+    const parts = csv.split(",").toList()
+    print(parts, parts.join(" | "))
+    print("a\nb\r\nc".lines().toList())
+
+    var out = ""
+    for i of 1..4 { out.pushStr!("#i;") }
+    print(out)
+
+    print(parts[1].parseInt(), parts[2].parseFloat())
+    switch "12x".parseInt() {
+        case ok(n): print("got #n")
+        case err(e): print("not a number: #(e.message)")
+    }
+}

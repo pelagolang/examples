@@ -1,0 +1,23 @@
+/// Shows: closures written with `~>`, one-argument shorthand (`x ~> ...`), capturing a variable to change it
+/// (`[total!]`), and passing one to a function (a function cannot return a closure that borrows; that needs `box<fn ...>`).
+/// Run:   pelago run basics/closures.pel
+/// Output:
+/// | 42
+/// | [2, 4, 6]
+/// | 10
+/// | 20
+fn twice(f: fn(int) -> int, x: int) -> int = f(f(x))
+
+fn main() {
+    const double = x ~> x * 2
+    print(double(21))
+    print([1, 2, 3].iter().map(double).toList())
+
+    var total = 0
+    [1, 2, 3, 4].iter().each([total!] x ~> total += x)
+    print(total)
+
+    /// A closure can use variables around it.
+    const step = 5
+    print(twice(x ~> x + step, 10))
+}

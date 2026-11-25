@@ -1,0 +1,37 @@
+/// Shows: `std.aead` (ChaCha20-Poly1305): `seal` encrypts and authenticates, `open` returns `none` if anything, even
+/// one bit of the message or the extra data, was changed.
+/// Run:   pelago run crypto/aead.pel
+/// Output:
+/// | 30 5e12b63a00644924a54a8642e65f10f347102a35e1a67dd06e933e74e67f
+/// | opened: 14 bytes
+/// | true
+/// | true
+import std.aead
+import std.hash
+
+fn text(s: str) -> [byte] = s.bytes().toList()
+
+fn bytesOf(n: int, k: int) -> [byte] {
+    var out: [byte] = []
+    for i of 0..n { out.push!(((i * k + 5) & 255).wrapToByte()) }
+    out
+}
+
+fn main() {
+    /// A demo key and nonce. Real keys come from `std.csprng` and a nonce is never used twice with one key.
+    const key = bytesOf(32, 1)
+    const nonce = bytesOf(12, 3)
+    const sealed = aead.seal(key, nonce, text("attack at dawn"), text("header"))
+    print(sealed.len(), hash.hex(sealed))
+
+    const opened = aead.open(key, nonce, sealed, text("header"))
+    switch opened {
+        case some(plain): print("opened: #(plain.len()) bytes")
+        case none: print("rejected")
+    }
+
+    var forged = copy sealed
+    forged[0] = forged[0] ^ 1
+    print(aead.open(key, nonce, forged, text("header")) == none)
+    print(aead.open(key, nonce, sealed, text("other header")) == none)
+}
