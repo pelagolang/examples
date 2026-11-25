@@ -1,0 +1,25 @@
+/// Shows: `std.big`: integers of any size. `big.parse` is a `result`; the operators work as on `int`.
+/// Run:   pelago run math/bigint.pel
+/// Output:
+/// | 123456789012345678902222222211 123456789012345678900246913569 121932631124828532112482853211126352690
+/// | 124999998873437499901 574845669 true
+/// | 1606938044258990275541962092341162602522202993782792835301376
+/// | true
+/// | done
+import std.big
+
+fn demo() -> void ! parse_error {
+    const a = big.parse("123456789012345678901234567890")?
+    const b = big.parse("987654321")?
+    print(a + b, a - b, a * b)
+    print(a / b, a % b, a > b)
+    print(big.fromInt(2).pow(200))
+    print(big.parse("12x").isErr())
+}
+
+fn main() {
+    switch demo() {
+        case ok(_): print("done")
+        case err(e): print("error")
+    }
+}

@@ -1,0 +1,7 @@
+/// Shows: the smallest program. `print` writes its arguments and a newline.
+/// Run:   pelago run basics/hello.pel
+/// Output:
+/// | Hello, world
+fn main() {
+    print("Hello, world")
+}

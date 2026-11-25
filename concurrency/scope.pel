@@ -1,0 +1,27 @@
+/// Shows: `scope` runs tasks that borrow local variables and waits for all of them before the block ends, so two
+/// halves of a list can be summed in parallel.
+/// Run:   pelago run concurrency/scope.pel
+/// Output:
+/// | 5050
+fn sum(xs: [int]) -> int {
+    var t = 0
+    for x of xs { t += x }
+    t
+}
+
+fn parallel_sum(xs: [int]) -> int {
+    var left = 0
+    var right = 0
+    const mid = xs.len() / 2
+    scope s {
+        s.spawn([inout left] ~> left = sum(xs[..mid]))
+        s.spawn([inout right] ~> right = sum(xs[mid..]))
+    }
+    left + right
+}
+
+fn main() {
+    var xs: [int] = []
+    for i of 1..101 { xs.push!(i) }
+    print(parallel_sum(xs))
+}

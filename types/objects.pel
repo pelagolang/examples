@@ -1,0 +1,28 @@
+/// Shows: `obj` with fields, inheritance written `:`, `open` and `override` for methods that subclasses change.
+/// Run:   pelago run types/objects.pel
+/// Output:
+/// | Rex says woof
+/// | Fido says woof
+/// | Tom says meow
+/// | Thing says ...
+open obj animal {
+    name: string
+
+    open fn speak(self) -> string = "..."
+    fn intro(self) -> string = "#(self.name) says #(self.speak())"
+}
+
+obj dog : animal {
+    override fn speak(self) -> string = "woof"
+}
+
+obj cat : animal {
+    override fn speak(self) -> string = "meow"
+}
+
+fn main() {
+    const pets = [dog { name: "Rex" }, dog { name: "Fido" }]
+    for p of pets { print(p.intro()) }
+    print(cat { name: "Tom" }.intro())
+    print(animal { name: "Thing" }.intro())
+}

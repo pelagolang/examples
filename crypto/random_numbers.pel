@@ -1,0 +1,40 @@
+/// Shows: `std.random` (a seeded generator: the same seed gives the same numbers) and `std.csprng` (a secure
+/// generator that you can seed from the system, or from a key for tests).
+/// Run:   pelago run crypto/random_numbers.pel
+/// Output:
+/// | -4767286540954276203 2949826092126892291
+/// | 1 1 -3
+/// | 0.868228
+/// | true
+/// | 2b23cce7a26023ab
+/// | 16 true
+/// | system generator works
+import std.csprng
+import std.hash
+import std.random
+import { csrng } = std.csprng
+
+fn secure() -> void ! io_error {
+    var g = csrng.fromSystem()?
+    const key = g.bytes!(16)
+    const roll = g.between!(1, 6)
+    print(key.len(), roll >= 1 && roll <= 6)
+}
+
+fn main() {
+    var r = random.seeded(42)
+    print(r.next!(), r.next!())
+    print(r.between!(1, 6), r.between!(1, 6), r.between!(-5, 5))
+    print(r.fraction!())
+
+    var a = random.seeded(7)
+    var b = random.seeded(7)
+    print(a.next!() == b.next!())
+
+    var fixed = csrng.fromKey(hash.fromHex("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f") ?? [])
+    print(hash.hex(fixed.bytes!(8)))
+    switch secure() {
+        case ok(_): print("system generator works")
+        case err(e): print("no system generator")
+    }
+}

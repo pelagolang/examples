@@ -1,0 +1,26 @@
+/// Shows: the sieve of Eratosthenes with a list of `bool`, `while` loops and a result that is easy to check.
+/// Run:   pelago run programs/primes.pel
+/// Output:
+/// | [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+/// | 25 9592
+fn sieve(limit: int) -> [int] {
+    var composite: [bool] = []
+    for i of 0..limit + 1 { composite.push!(false) }
+    var primes: [int] = []
+    for n of 2..limit + 1 {
+        if composite[n] { continue }
+        primes.push!(n)
+        var m = n * n
+        while m <= limit {
+            composite[m] = true
+            m += n
+        }
+    }
+    primes
+}
+
+fn main() {
+    const ps = sieve(100)
+    print(ps)
+    print(ps.len(), sieve(100000).len())
+}

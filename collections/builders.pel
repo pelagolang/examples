@@ -1,0 +1,21 @@
+/// Shows: builders, the short way to make a list, set or map from another collection, with `of`, `if` and `~>`.
+/// Run:   pelago run collections/builders.pel
+/// Output:
+/// | [2, 6, 10]
+/// | ["0:1", "1:2", "2:3", "3:4", "4:5", "5:6"]
+/// | [(1, "a"), (1, "b"), (2, "a"), (2, "b")]
+/// | 4
+/// | 25
+fn main() {
+    const xs = [1, 2, 3, 4, 5, 6]
+    const doubled_odds = [x of xs if x % 2 == 1 ~> x * 2]
+    print(doubled_odds)
+    const labels = [i, x of xs ~> "#i:#x"]
+    print(labels)
+    const pairs = [x of [1, 2], y of ["a", "b"] ~> (x, y)]
+    print(pairs)
+    const remainders = set { x of xs ~> x % 4 }
+    print(remainders.len())
+    const squares = map { x of xs ~> x : x * x }
+    print(squares.get(5) ?? 0)
+}

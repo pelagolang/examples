@@ -1,0 +1,39 @@
+/// Shows: `if` as a statement and as an expression, `while`, `for ... of` over ranges, `break` and `continue`.
+/// Run:   pelago run basics/control_flow.pel
+/// Output:
+/// | odd
+/// | big
+/// | 1..6 sums to 15
+/// | collatz(27) takes 111 steps
+/// | odd 1
+/// | odd 3
+/// | odd 5
+/// | odd 7
+fn main() {
+    const n = 7
+    if n % 2 == 0 {
+        print("even")
+    } else {
+        print("odd")
+    }
+    const size = n > 5 ? "big" : "small"
+    print(size)
+
+    var total = 0
+    for i of 1..6 { total += i }
+    print("1..6 sums to #total")
+
+    var steps = 0
+    var x = 27
+    while x != 1 {
+        x = x % 2 == 0 ? x / 2 : 3 * x + 1
+        steps += 1
+    }
+    print("collatz(27) takes #steps steps")
+
+    for i of 0..10 {
+        if i % 2 == 0 { continue }
+        if i > 7 { break }
+        print("odd #i")
+    }
+}

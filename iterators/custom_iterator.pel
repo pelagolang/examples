@@ -1,0 +1,19 @@
+/// Shows: `iter<T>` values you build from a range with `.iter()`, passed to functions that take any iterator.
+/// Run:   pelago run iterators/custom_iterator.pel
+/// Output:
+/// | [0, 2, 4, 6, 8]
+/// | 20 6
+/// | [0, 1, 2, 3, 4]
+fn evens(limit: int) -> iter<int> = (0..limit).iter().filter(x ~> x % 2 == 0)
+
+fn total(items: iter<int>) -> int {
+    var t = 0
+    for x of items { t += x }
+    t
+}
+
+fn main() {
+    print(evens(10).toList())
+    print(total(evens(10)), total([1, 2, 3].iter()))
+    print(evens(100).map(x ~> x / 2).take(5).toList())
+}

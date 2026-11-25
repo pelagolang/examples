@@ -1,0 +1,20 @@
+/// Shows: `map` and `set`: literals (`{:}` is the empty map), `insert!`, `get` with `??`, iteration in insertion order.
+/// Run:   pelago run collections/maps_sets.pel
+/// Output:
+/// | 3 27 -1
+/// | ann is 31
+/// | bo is 27
+/// | cy is 45
+/// | 3 true false
+fn main() {
+    var ages: map<string, int> = {:}
+    ages.insert!("ann", 31)
+    ages.insert!("bo", 27)
+    ages.insert!("cy", 45)
+    print(ages.len(), ages.get("bo") ?? -1, ages.get("zed") ?? -1)
+    for name, age of ages { print("#name is #age") }
+
+    var seen: set<int> = set {}
+    for n of [3, 1, 3, 2, 1] { seen.insert!(n) }
+    print(seen.len(), 2 in seen, 9 in seen)
+}

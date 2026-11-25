@@ -1,0 +1,13 @@
+/// Shows: the `math` helpers: `min`, `max`, `clamp`, `sqrt`, `floor`, `pow`, `gcd`, `lcm`, `isqrt`, and float tests.
+/// Run:   pelago run math/functions.pel
+/// Output:
+/// | 3 8 10 4
+/// | 4 2 3 1024 81
+/// | 6 12 9
+/// | 5 true true
+fn main() {
+    print(min(3, 8), max(3, 8), clamp(15, 0, 10), abs(-4))
+    print(math.sqrt(16.0), math.floor(2.7), math.ceil(2.1), math.pow(2.0, 10.0), math.powInt(3, 4))
+    print(math.gcd(12, 18), math.lcm(4, 6), math.isqrt(99))
+    print(math.hypot(3.0, 4.0), math.isNan(0.0 / 0.0), math.isFinite(1.0))
+}

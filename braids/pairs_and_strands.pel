@@ -1,0 +1,38 @@
+/// Shows: reading a braid as pairs, its two strands (every other slot), and `split`/`unbraid`/`swap`.
+/// Run:   pelago run braids/pairs_and_strands.pel
+/// Output:
+/// | 3 7 eight 9 eight
+/// | 7 seven
+/// | 8 eight
+/// | 9 nine
+/// | [7, 8, 9] ["seven", "eight", "nine"]
+/// | [7, 8, 9] ["seven", "eight", "nine"]
+/// | 3 8 24
+/// | ("a", 1, "b", 2)
+/// | (2, "aa", 4, "bb")
+fn total(s: strand<int>) -> int {
+    var t = 0
+    for x of s { t += x }
+    t
+}
+
+fn main() {
+    const o: (int, string; 6) = (7, "seven", 8, "eight", 9, "nine")
+    /// `pairs()` is the number of pairs; `first(i)` and `second(i)` read pair `i`, counting from the end when negative.
+    print(o.pairs(), o.first(0), o.second(1), o.first(-1), o.second(-2))
+    for (a, b) of o.pairIter() { print(a, b) }
+
+    /// The strands are the even and the odd slots.
+    print(o.evens().toList(), o.odds().toList())
+    const (numbers, words) = o.split()
+    print(numbers, words)
+
+    /// A strand is a view: nothing is copied until you ask for it.
+    const view = o.firstStrand()
+    print(view.len(), view.at(1), total(view))
+
+    /// New braids from old ones.
+    const f: (int, string; 4) = (1, "a", 2, "b")
+    print(f.swap())
+    print(f.mapPairs((a, b) ~> (a * 2, b + b)))
+}

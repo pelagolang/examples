@@ -1,0 +1,15 @@
+/// Shows: `lock<T>` is shared state that changes from several tasks one at a time: reach inside with `with`. Each task
+/// gets its own handle with `copy`.
+/// Run:   pelago run concurrency/lock.pel
+/// Output:
+/// | 1000
+fn main() {
+    const total = lock(0)
+    scope s {
+        for i of 1..5 {
+            const mine = copy total
+            s.spawn(() ~> mine.with(n ~> { n += i * 100 }))
+        }
+    }
+    print(total.with(n ~> n))
+}

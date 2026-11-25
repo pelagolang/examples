@@ -1,0 +1,31 @@
+/// Shows: `std.io`: `print` for standard output, `io.eprintln` for standard error, `io.readLine` for standard input
+/// (it returns `none` at the end of input), and `std.env` / `std.path` helpers.
+/// Run:   pelago run files/streams.pel
+/// Output:
+/// | lines read: 0
+/// | (not set)
+/// | src/main.pel c.txt some("txt") c.tar
+/// | some("a/b") a/b.md
+import std.env
+import std.io
+import std.path
+
+fn main() {
+    io.eprintln("this goes to standard error")
+    var lines = 0
+    while true {
+        switch io.readLine() {
+            case some(line): lines += 1
+            case none: break
+        }
+    }
+    print("lines read: #lines")
+    print(env.get("PELAGO_SURELY_NOT_SET") ?? "(not set)")
+    print(
+        path.join("src", "main.pel"),
+        path.fileName("a/b/c.txt"),
+        path.extension("a/b/c.txt"),
+        path.stem("a/b/c.tar.gz"),
+    )
+    print(path.parent("a/b/c.txt"), path.withExtension("a/b.txt", "md"))
+}

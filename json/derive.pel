@@ -1,0 +1,53 @@
+/// Shows: `@derive(toJson, fromJson)` writes the encoder and decoder for a struct or enum for you (`pointEncode`,
+/// `pointDecode`). Nested structs, lists, options, defaults and enums all work, and a decode error says where it went wrong.
+/// Run:   pelago run json/derive.pel
+/// Output:
+/// | {"title":"demo","origin":{"x":0,"y":0},"shapes":["dot",{"circle":{"radius":4}},{"rect":{"w":2,"h":3}}],"visible":true,"note":null}
+/// | demo 3 true true
+/// | error 1:40: $.origin.y: expected a whole number, found text
+import std.json
+import { json_error } = std.json
+
+@derive(toJson, fromJson)
+struct point { x: int, y: int }
+
+@derive(toJson, fromJson)
+enum shape {
+    dot
+    circle(radius: int)
+    rect(w: int, h: int)
+}
+
+@derive(toJson, fromJson)
+struct drawing {
+    title: string
+    origin: point
+    shapes: [shape]
+    visible: bool = true
+    note: string?
+}
+
+fn main() {
+    const d = drawing {
+        title: "demo",
+        origin: point { x: 0, y: 0 },
+        shapes: [shape.dot, shape.circle(radius: 4), shape.rect(w: 2, h: 3)],
+        note: none,
+    }
+    const text = drawingEncode(d)
+    print(text)
+    switch drawingDecode(text) {
+        case ok(back): print(
+            back.title,
+            back.shapes.len(),
+            back.visible,
+            drawingEncode(back) == text,
+        )
+        case err(e): print("error #e")
+    }
+    /// `visible` and `note` may be left out; `y` must be a number.
+    switch drawingDecode("{\"title\": \"t\", \"origin\": {\"x\": 1, \"y\": \"two\"}, \"shapes\": []}") {
+        case ok(_): print("decoded")
+        case err(e): print("error #e")
+    }
+}

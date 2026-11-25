@@ -1,0 +1,21 @@
+/// Shows: ranges (`a..b` excludes `b`), `for x of`, `for i, x of` with an index, and iterating a string and a map.
+/// Run:   pelago run iterators/ranges_and_loops.pel
+/// Output:
+/// | [1, 4, 9, 16, 25]
+/// | 0: 1
+/// | 1: 4
+/// | 2: 9
+/// | 3: 16
+/// | 4: 25
+/// | 5 true false
+/// | a
+/// | b
+/// | c
+fn main() {
+    var squares: [int] = []
+    for i of 1..6 { squares.push!(i * i) }
+    print(squares)
+    for i, s of squares { print("#i: #s") }
+    print((0..5).iter().count(), 3 in 0..5, 5 in 0..5)
+    for ch of "abc".chars() { print(ch) }
+}

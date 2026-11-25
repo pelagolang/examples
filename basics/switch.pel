@@ -1,0 +1,28 @@
+/// Shows: `switch` as the one pattern matching form: values, ranges, guards and a default.
+/// Run:   pelago run basics/switch.pel
+/// Output:
+/// | 0 zero even
+/// | 3 a few odd
+/// | 42 some even
+/// | 1000 many even
+fn describe(n: int) -> string {
+    switch n {
+        case 0: "zero"
+        case 1..10: "a few"
+        case 10..100: "some"
+        default: "many"
+    }
+}
+
+fn parity(n: int) -> string {
+    switch n {
+        case x if x % 2 == 0: "even"
+        default: "odd"
+    }
+}
+
+fn main() {
+    for n of [0, 3, 42, 1000] {
+        print(n, describe(n), parity(n))
+    }
+}

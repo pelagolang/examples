@@ -1,0 +1,20 @@
+/// Shows: strings are UTF-8: `len` counts bytes, `charCount` counts characters; searching, trimming, case, replacing.
+/// Run:   pelago run strings/basics.pel
+/// Output:
+/// | 13 12 HELLO hello
+/// | some(7) none true true true
+/// | [padded] a+b+c
+/// | some(("key", "value")) some("file")
+/// | 007 ababab
+/// | a
+/// | ñ
+/// | b
+fn main() {
+    const s = "hello, wörld"
+    print(s.len(), s.charCount(), "Hello".toUpper(), "Hello".toLower())
+    print(s.find("wör"), s.find("xyz"), s.contains("llo"), s.startsWith("he"), s.endsWith("ld"))
+    print("[#("  padded  ".trim())]", "a-b-c".replace("-", "+"))
+    print("key=value".splitOnce("="), "file.pel".stripSuffix(".pel"))
+    print("7".padLeft(3, '0'), "ab".repeat(3))
+    for c of "añb".chars() { print(c) }
+}

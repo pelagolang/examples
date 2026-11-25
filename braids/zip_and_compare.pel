@@ -1,0 +1,34 @@
+/// Shows: `braid.zip` weaves two lists into one braid and `unbraid` splits it back; braids compare, order and hash
+/// slot by slot, so they work in sets; and `[(A, B); N]` (N pairs) is a different type with the same memory.
+/// Run:   pelago run braids/zip_and_compare.pel
+/// Output:
+/// | (1, 4.5, 2, 5.5, 3, 6.5)
+/// | [1, 2, 3] [4.5, 5.5, 6.5]
+/// | false true true false
+/// | 2 true
+/// | (1, "a", 2, "B") (1, "a", 2, "b")
+/// | [(1, "x"), (2, "y")]
+fn main() {
+    const zipped = braid.zip([1, 2, 3], [4.5, 5.5, 6.5])
+    print(zipped)
+    const (a, b) = zipped.unbraid()
+    print(a, b)
+
+    const f: (int, string; 4) = (1, "a", 2, "b")
+    const g: (int, string; 4) = (1, "a", 2, "c")
+    print(f == g, f != g, f < g, f > g)
+
+    var seen: set<(int, string; 4)> = set {}
+    seen.insert!(copy f)
+    seen.insert!(copy g)
+    seen.insert!(copy f)
+    print(seen.len(), f in seen)
+
+    /// Changing a slot drops what was there.
+    var e = copy f
+    e.setSecond!(1, "B")
+    print(e, f)
+
+    const pairs: [(int, string); 2] = [(1, "x"), (2, "y")]
+    print(pairs)
+}

@@ -1,0 +1,17 @@
+/// Shows: `to` for conversions that cannot lose information, `truncInt`/`roundInt` for float to int, and the checked and wrapping byte helpers.
+/// Run:   pelago run basics/casts.pel
+/// Output:
+/// | 37.5 7 8 -8
+/// | 300!
+/// | none some(200)
+/// | 44
+fn main() {
+    const n = 300
+    const f = (n to float) / 8.0
+    const back = 7.9.truncInt()
+    print(f, back, 7.5.roundInt(), (-7.5).floorInt())
+    print(n to string + "!")
+    /// A narrowing conversion that does not fit stops the program, so use the explicit helpers when it might not.
+    print(n.toByteChecked(), 200.toByteChecked())
+    print(n.wrapToByte())
+}

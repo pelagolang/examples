@@ -1,0 +1,31 @@
+/// Shows: derived JSON for `map<string, V>` fields, braid fields and the 128/256 bit integers, which keep every digit.
+/// Run:   pelago run json/bignum_and_maps.pel
+/// Output:
+/// | {"owner":"ann","balances":{"ann":10,"bo":20},"pairs":[1,"one",2,"two"],"supply":"115792089237316195423570985008687907853269984665640564039457584007913129639935"}
+/// | 2 true
+import std.json
+
+@derive(toJson, fromJson)
+struct ledger {
+    owner: string
+    balances: map<string, int>
+    pairs: (int, string; 4)
+    supply: uint256
+}
+
+fn main() {
+    var l = ledger {
+        owner: "ann",
+        balances: {:},
+        pairs: (1, "one", 2, "two"),
+        supply: 115792089237316195423570985008687907853269984665640564039457584007913129639935,
+    }
+    l.balances.insert!("ann", 10)
+    l.balances.insert!("bo", 20)
+    const text = ledgerEncode(l)
+    print(text)
+    switch ledgerDecode(text) {
+        case ok(back): print(back.balances.len(), back.supply == l.supply)
+        case err(e): print("error #e")
+    }
+}

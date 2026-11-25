@@ -1,0 +1,13 @@
+/// Shows: a file is a module and its file name is the module name. `import { a, b } = .name` brings names from
+/// a sibling file in. Run the directory: `pelago run modules/imports`, so the other files are found.
+/// Run:   pelago run modules/imports
+/// Output:
+/// | 5 7 12
+/// | area 12
+import { add, mul } = .arith
+import { area, rect } = .geometry
+
+fn main() {
+    print(add(2, 3), 3 + 4, mul(3, 4))
+    print("area #(area(rect { w: 3, h: 4 }))")
+}

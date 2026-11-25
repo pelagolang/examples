@@ -1,0 +1,15 @@
+/// Shows: a missing file is an `err`, never a crash, and the `io_error` says what went wrong.
+/// Run:   pelago run files/errors.pel
+/// Output:
+/// | could not read: opening this/file/does/not/exist.txt: no such file or directory
+/// | (none)
+import std.fs
+
+fn main() {
+    switch fs.readText("this/file/does/not/exist.txt") {
+        case ok(t): print("read #(t.len()) bytes")
+        case err(e): print("could not read: #(e.message)")
+    }
+    /// `or` supplies a fallback when you do not care why it failed.
+    print(fs.readText("missing.txt").or("(none)"))
+}

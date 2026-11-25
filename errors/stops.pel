@@ -1,0 +1,16 @@
+/// Shows: `checkedAdd` and friends return an `option` instead of stopping; an unchecked overflow is a stop, never
+/// silent wrap-around. `+%` wraps on purpose and `saturatingAdd` clamps.
+/// Run:   pelago run errors/stops.pel
+/// Output:
+/// | none some(6)
+/// | 9223372036854775807 -9223372036854775808
+/// | -9223372036854775808
+/// | 0
+fn main() {
+    const big = 9223372036854775807
+    print(big.checkedAdd(1), 5.checkedAdd(1))
+    print(big.saturatingAdd(1), big.wrappingAdd(1))
+    print(big +% 1)
+    /// `big + 1` would stop the program with `stopped: integer overflow`, with the file and line.
+    print(big.checkedMul(2) ?? 0)
+}

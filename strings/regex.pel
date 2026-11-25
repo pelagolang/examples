@@ -1,0 +1,28 @@
+/// Shows: `std.regex`: compile a pattern (a `result`), then `isMatch`, `findAll`, capture groups and `replaceAll`.
+/// Run:   pelago run strings/regex.pel
+/// Output:
+/// | true
+/// | found 5-15
+/// | found 22-32
+/// | born 10/12/1815, died 27/11/1852
+/// | done
+/// | bad pattern: a group is not closed
+import std.regex
+
+fn dates(text: str) -> void ! parse_error {
+    const re = regex.compile("(\\d{4})-(\\d{2})-(\\d{2})")?
+    print(re.isMatch(text))
+    for hit of re.findAll(text) { print("found #(hit.start)-#(hit.end)") }
+    print(re.replaceAll(text, "$3/$2/$1"))
+}
+
+fn main() {
+    switch dates("born 1815-12-10, died 1852-11-27") {
+        case ok(_): print("done")
+        case err(e): print("bad pattern: #(e.message)")
+    }
+    switch regex.compile("(unclosed") {
+        case ok(_): print("compiled")
+        case err(e): print("bad pattern: #(e.message)")
+    }
+}

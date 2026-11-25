@@ -1,0 +1,36 @@
+/// Shows: clocks and timers: `now`, `sleep`, `stopwatch`. Times differ on every run, so only what must always hold
+/// is printed.
+/// Run:   pelago run time/clocks.pel
+/// Output:
+/// | true true
+/// | true
+/// | true
+/// | true
+/// | done
+import std.time
+
+fn demo() -> void ! io_error {
+    const start = time.now()?
+    time.sleep(time.millis(30))
+    const spent = start.elapsed()?
+    print(spent >= time.millis(30), spent < time.seconds(5))
+
+    var watch = time.startStopwatch()?
+    time.sleep(time.millis(20))
+    const lap = watch.lap!()?
+    print(lap >= time.millis(20))
+
+    const deadline = time.deadline(time.millis(10))?
+    time.sleepUntil(deadline)?
+    print(deadline.hasPassed()?)
+
+    /// Wall-clock time since 1970 is a `moment`.
+    print((time.wallNow()?).unixSeconds() > 1_700_000_000)
+}
+
+fn main() {
+    switch demo() {
+        case ok(_): print("done")
+        case err(e): print("clock error")
+    }
+}

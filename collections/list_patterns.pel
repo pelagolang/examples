@@ -1,0 +1,28 @@
+/// Shows: `switch` on the shape of a list: empty, one element, head and tail (`first, ...rest`).
+/// Run:   pelago run collections/list_patterns.pel
+/// Output:
+/// | 10
+/// | empty
+/// | just 7
+/// | two: 1 and 2
+/// | 5 then 3 more
+fn sum(xs: [int]) -> int {
+    switch xs {
+        case []: 0
+        case [first, ...rest]: first + sum(rest)
+    }
+}
+
+fn describe(xs: [int]) -> string {
+    switch xs {
+        case []: "empty"
+        case [only]: "just #only"
+        case [a, b]: "two: #a and #b"
+        case [first, ...rest]: "#first then #(rest.len()) more"
+    }
+}
+
+fn main() {
+    print(sum([1, 2, 3, 4]))
+    for xs of [[], [7], [1, 2], [5, 6, 7, 8]] { print(describe(xs)) }
+}

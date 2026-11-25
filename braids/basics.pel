@@ -1,0 +1,31 @@
+/// Shows: a braid is a fixed-size sequence of N slots whose types alternate: `(int, string; 4)` is int, string, int,
+/// string. The annotation makes a list a braid; the long spelling `braid<int, string; 4>` means the same.
+/// Run:   pelago run braids/basics.pel
+/// Output:
+/// | (1, "one", 2, "two") true
+/// | 11 one! 2 two
+/// | (0, "", 0, "", 0, "") 6
+/// | (1, 2, 30, 4) 30
+/// | (1, "a", true, 2, "b", false) b false
+fn main() {
+    const ids: (int, string; 4) = (1, "one", 2, "two")
+    const same: braid<int, string; 4> = (1, "one", 2, "two")
+    print(ids, ids == same)
+
+    /// A constant position has the type of its slot.
+    print(ids[0] + 10, ids[1] + "!", ids.2, ids[3])
+
+    /// `(0, ""; 6)` repeats the cycle: six slots, three ints and three strings.
+    const blank: (int, string; 6) = (0, ""; 6)
+    print(blank, blank.len())
+
+    /// A cycle of one type accepts a run-time position.
+    var m: (int, int; 4) = (1, 2, 3, 4)
+    var i = 2
+    m[i] = 30
+    print(m, m[i])
+
+    /// A cycle of three types.
+    const c: (int, string, bool; 6) = (1, "a", true, 2, "b", false)
+    print(c, c[4], c[5])
+}
